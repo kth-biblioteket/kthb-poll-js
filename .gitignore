@@ -1,0 +1,41 @@
+
+.*
+~*
+
+ehthumbs.db
+Thumbs.db
+
+*.log
+*.sql
+*.sqlite
+
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+*.der
+*.key
+*.pem
+*.env
+
+# --------------------------------------------------------
+# BEGIN Explictly Allowed Files (i.e. do NOT ignore these)
+# --------------------------------------------------------
+
+# track these files, if they exist
+!.gitignore
+!.editorconfig
+!.phpcs.xml.dist
+!.env.example
