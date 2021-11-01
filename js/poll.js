@@ -1,3 +1,15 @@
+var csslink=document.createElement("link")
+csslink.setAttribute("rel", "stylesheet")
+csslink.setAttribute("type", "text/css")
+if (window.location.search.search(/[?&]pp=true(?:$|&)/) !== -1) {
+    csslink.setAttribute("href", "css/stylepp.css?time=" + Date.now())
+} else {
+    csslink.setAttribute("href", "css/style.css?time=" + Date.now())
+}
+
+if (typeof csslink!="undefined")
+    document.getElementsByTagName("head")[0].appendChild(csslink)
+
 var getTotal = function (myChart) {
     var sum = myChart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
     return sum;
