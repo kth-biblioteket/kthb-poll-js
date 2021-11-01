@@ -1,3 +1,4 @@
+/*
 var csslink=document.createElement("link")
 csslink.setAttribute("rel", "stylesheet")
 csslink.setAttribute("type", "text/css")
@@ -6,6 +7,7 @@ if (window.location.search.search(/[?&]pp=true(?:$|&)/) !== -1) {
 } else {
     csslink.setAttribute("href", "css/style.css?time=" + Date.now())
 }
+*/
 
 if (typeof csslink!="undefined")
     document.getElementsByTagName("head")[0].appendChild(csslink)
