@@ -9,12 +9,19 @@ if (window.location.search.search(/[?&]pp=true(?:$|&)/) !== -1) {
 }
 */
 
-if (typeof csslink!="undefined")
+if (typeof csslink != "undefined")
     document.getElementsByTagName("head")[0].appendChild(csslink)
 
 var getTotal = function (myChart) {
     var sum = myChart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
     return sum;
+}
+
+var doughnutcentertext = "Promises"
+var header = "Promises"
+if (getcurrentlang() == 'sv') {
+    doughnutcentertext = "Löften"
+    $('#header').text('Klimatlöften')
 }
 
 const ctx = document.getElementById('myChart');
@@ -96,7 +103,7 @@ const myChart = new Chart(ctx, {
                         color: 'rgba(255, 255, 255, 1)',
                     },
                     {
-                        text: `Promises`,
+                        text: doughnutcentertext,
                         font: {
                             size: 48,
                             family: 'Arial, Helvetica, sans-serif',
@@ -113,47 +120,33 @@ const myChart = new Chart(ctx, {
     }
 });
 
-var api_url = "https://ref.lib.kth.se"
-var eventid = 2;
-var data = [{
-    name: 'Clothing',
-    value: 0,
-    color: '#cedb29'
-}, {
-    name: 'Food',
-    value: 0,
-    color: '#5cb7b3'
-}, {
-    name: 'Education',
-    value: 0,
-    color: '#146170'
-}, {
-    name: 'Things',
-    value: 0,
-    color: '#a65a95'
-}, {
-    name: 'Plants',
-    value: 0,
-    color: '#cb7d31'
-}];
+if (usesocket == true) {
+    var socket = io.connect(api_url);
 
-var socket = io.connect('https://ref.lib.kth.se');
+    socket.on("FromAPI", function (data) {
+        document.getElementById("globe").classList.toggle('animated')
+        GETInitialVotes(false);
+    });
 
-socket.on("FromAPI", function (data) {
-    document.getElementById("globe").classList.toggle('animated')
-    GETInitialVotes(false);
-});
+    socket.on("connect", () => {
+    });
 
-socket.on("connect", () => {
-});
+    socket.on("disconnect", () => {
+    });
 
-socket.on("disconnect", () => {
-});
+    socket.on('error', console.error.bind(console));
 
-socket.on('error', console.error.bind(console));
+}
+
+function getcurrentlang() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const language = urlParams.get('lang')
+    return language
+}
 
 function GETInitialVotes(first) {
-     return fetch(api_url + '/vote/api/v1/vote/' + eventid, {
+    return fetch(api_url + '/vote/api/v1/vote/' + eventid, {
         method: 'GET',
         headers: new Headers({
             'X-Api-Key': 'kg897n987n98n)!dskjlksjfd?435mnckjsbsekef-_klknbhjhsef'
@@ -166,16 +159,17 @@ function GETInitialVotes(first) {
             throw new TypeError('GETVotes error');
         }
     }).then(function (resJSON) {
-        var total = 0;
-        var currentVotes = resJSON.currentVotes
+        var currentNewVotes = resJSON.currentNewVotes
         var chartdataarray = [];
         var chartlabelarray = [];
-        data.map(function (category, i) {
-            var key = category.name;
-            var votes = currentVotes[key];
-            chartlabelarray.push(key)
-            chartdataarray.push(votes)
-        });
+        for (let i in currentNewVotes) {
+            if (getcurrentlang() == 'sv') {
+                chartlabelarray.push(currentNewVotes[i].description_sv)
+            } else {
+                chartlabelarray.push(currentNewVotes[i].description_en)
+            }
+            chartdataarray.push(currentNewVotes[i].votes)
+        }
         myChart.data.datasets[0].data = chartdataarray;
         myChart.data.labels = chartlabelarray;
         if (first === true) {
@@ -186,7 +180,6 @@ function GETInitialVotes(first) {
     });
 }
 
-
 GETInitialVotes(true)
 
 move.onclick = () => {
@@ -194,7 +187,7 @@ move.onclick = () => {
     GETInitialVotes(false);
 }
 const animated = document.getElementById('globe');
-    animated.addEventListener('animationend', () => {
-        document.getElementById("globe").classList.toggle('animated')
-    });
+animated.addEventListener('animationend', () => {
+    document.getElementById("globe").classList.toggle('animated')
+});
 

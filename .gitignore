@@ -30,11 +30,8 @@ Thumbs.db
 *.pem
 *.env
 
-# --------------------------------------------------------
-# BEGIN Explictly Allowed Files (i.e. do NOT ignore these)
-# --------------------------------------------------------
+config.js
 
-# track these files, if they exist
 !.gitignore
 !.editorconfig
 !.phpcs.xml.dist
