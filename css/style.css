@@ -1,6 +1,7 @@
 body {
     margin: 0 auto;
     padding: 0;
+    font-family: "Open Sans",Arial,"Helvetica Neue",helvetica,sans-serif;
 }
 #pollbody {
     background-image: url('../img/wintersun.jpg');
@@ -14,14 +15,13 @@ body {
 #header {
     position: relative;
     font-size: 7vw;
-    font-family: 'Arial';
     color: rgba(255, 255, 255, 0.8)
 }
 
 #chartwrapper {
     position: relative;
     height: 80vh;
-    width: 90vw;
+    width: 100vw;
     margin: auto
 }
 
