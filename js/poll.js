@@ -1,27 +1,42 @@
-/*
-var csslink=document.createElement("link")
-csslink.setAttribute("rel", "stylesheet")
-csslink.setAttribute("type", "text/css")
-if (window.location.search.search(/[?&]pp=true(?:$|&)/) !== -1) {
-    csslink.setAttribute("href", "css/stylepp.css?time=" + Date.now())
-} else {
-    csslink.setAttribute("href", "css/style.css?time=" + Date.now())
+function getcurrentlang () {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const language = urlParams.get('lang')
+    return language
 }
-*/
 
-if (typeof csslink != "undefined")
-    document.getElementsByTagName("head")[0].appendChild(csslink)
+function getDisplay () {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const display = urlParams.get('display')
+    return display
+}
 
 var getTotal = function (myChart) {
     var sum = myChart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
     return sum;
 }
 
-var doughnutcentertext = "Promises"
-var header = "Promises"
+var getDoughnutcentertext = function () {
+    if (getcurrentlang() == 'sv') {
+        return doughnutcentertext_sv
+    } else {
+        return doughnutcentertext
+    }
+}
+
 if (getcurrentlang() == 'sv') {
-    doughnutcentertext = "Löften"
-    $('#header').text('Klimatlöften')
+    if (getDisplay() == 'libtv') {
+        $('#header').text(header_sv_lib_tv)
+    } else {
+        $('#header').text(header_sv)
+    }
+} else {
+    if (getDisplay() == 'libtv') {
+        $('#header').text(header_lib_tv)
+    } else {
+        $('#header').text(header)
+    }
 }
 
 const ctx = document.getElementById('myChart');
@@ -30,24 +45,7 @@ Chart.register(DoughnutLabel);
 const myChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
-        //labels: ['Clothing', 'Food', 'Education', 'Things', 'Plants'],
-        datasets: [{
-            label: '# of Votes',
-            backgroundColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)'
-            ],
-            hoverBackgroundColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)'
-            ]
-        }]
+         datasets: [{}]
     },
     options: {
         responsive: true,
@@ -64,11 +62,9 @@ const myChart = new Chart(ctx, {
             datalabels: {
                 labels: {
                     name: {
-                        // center, end, start, top*
                         align: 'end',
                         anchor: 'end',
-                        color: '#ffffff' //function (ctx) {return ctx.dataset.backgroundColor;}
-                        ,
+                        color: 'rgba(255, 255, 255, 0.8)',
                         font: function (context) {
                             var avgSize = Math.round((context.chart.height + context.chart.width) / 2);
                             var size = Math.round(avgSize / 32);
@@ -95,28 +91,28 @@ const myChart = new Chart(ctx, {
                     {
                         text: getTotal,
                         font: {
-                            size: 96,
+                            size: doughnutcentertotalfontsize,
                             family: 'Arial, Helvetica, sans-serif',
                             style: 'italic',
                             weight: 'bold',
                         },
-                        color: 'rgba(255, 255, 255, 1)',
+                        color: 'rgba(255, 255, 255, 0.8)',
                     },
                     {
-                        text: doughnutcentertext,
+                        text: getDoughnutcentertext,
                         font: {
-                            size: 48,
+                            size: doughnuttexttotalfontsize,
                             family: 'Arial, Helvetica, sans-serif',
                             style: 'italic',
                             weight: 'bold',
                         },
-                        color: 'rgba(255, 255, 255, 1)',
+                        color: 'rgba(255, 255, 255, 0.8)',
                     },
                 ],
             }
         },
-        cutout: "65%",
-        radius: "60%"
+        cutout: cutout,
+        radius: radius
     }
 });
 
@@ -138,18 +134,11 @@ if (usesocket == true) {
 
 }
 
-function getcurrentlang() {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const language = urlParams.get('lang')
-    return language
-}
-
 function GETInitialVotes(first) {
     return fetch(api_url + '/vote/api/v1/vote/' + eventid, {
         method: 'GET',
         headers: new Headers({
-            'X-Api-Key': 'kg897n987n98n)!dskjlksjfd?435mnckjsbsekef-_klknbhjhsef'
+            'X-Api-Key': XApiKey
         }),
         mode: 'cors'
     }).then(function (res) {
@@ -162,6 +151,7 @@ function GETInitialVotes(first) {
         var currentNewVotes = resJSON.currentNewVotes
         var chartdataarray = [];
         var chartlabelarray = [];
+        var chartbackgroundcolorarray = [];
         for (let i in currentNewVotes) {
             if (getcurrentlang() == 'sv') {
                 chartlabelarray.push(currentNewVotes[i].description_sv)
@@ -169,8 +159,10 @@ function GETInitialVotes(first) {
                 chartlabelarray.push(currentNewVotes[i].description_en)
             }
             chartdataarray.push(currentNewVotes[i].votes)
+            chartbackgroundcolorarray.push(currentNewVotes[i].rgbacolor)
         }
         myChart.data.datasets[0].data = chartdataarray;
+        myChart.data.datasets[0].backgroundColor = chartbackgroundcolorarray;
         myChart.data.labels = chartlabelarray;
         if (first === true) {
         }
