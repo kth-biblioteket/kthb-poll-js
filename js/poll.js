@@ -18,6 +18,10 @@ var getDoughnutcentertext = function () {
     }
 }
 
+if (getQuerystringparam('display') == 'libtv') {
+    $('body').css('overflow', 'hidden');
+}
+
 if (getQuerystringparam('lang') == 'sv') {
     if (getQuerystringparam('display') == 'libtv') {
         $('#header').text(header_sv_lib_tv)
@@ -71,7 +75,7 @@ const myChart = new Chart(ctx, {
                                 ? ctx.dataset.data[ctx.dataIndex] + ''
                                 : ctx.chart.data.labels[ctx.dataIndex];
                         },
-                        offset: 4,
+                        offset: 5,
                         opacity: function (ctx) {
                             return ctx.active ? 1 : 1;
                         }
