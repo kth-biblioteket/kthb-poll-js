@@ -27,15 +27,19 @@ var getDoughnutcentertext = function () {
 
 if (getcurrentlang() == 'sv') {
     if (getDisplay() == 'libtv') {
-        $('#header').text(header_sv_lib_tv)
+        $('#header').html(header_sv_lib_tv)
+        $('#charttext').html(charttext_sv)
     } else {
         $('#header').text(header_sv)
+        $('#charttext').html(charttext_sv)
     }
 } else {
     if (getDisplay() == 'libtv') {
-        $('#header').text(header_lib_tv)
+        $('#header').html(header_lib_tv)
+        $('#charttext').html(charttext)
     } else {
         $('#header').text(header)
+        $('#charttext').html(charttext_sv)
     }
 }
 
@@ -56,6 +60,26 @@ const myChart = new Chart(ctx, {
         },
         borderWidth: 0,
         plugins: {
+            title: {
+                display: false, 
+                position: "top", 
+                fullsize: false,
+                align: "start",
+                text: "These are the kg  jhg kjhg jkhg kj ",
+                padding: {
+                    top: 200,
+                    bottom: 30
+                },
+                color: 'rgba(255, 255, 255, 0.8)',
+                font: function (context) {
+                    var avgSize = Math.round((context.chart.height + context.chart.width) / 2);
+                    var size = Math.round(avgSize / 32);
+                    return {
+                        size: size + 3,
+                        weight: 'bold'
+                    };
+                },
+            },
             legend: {
                 display: false
             },
