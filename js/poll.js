@@ -1,15 +1,8 @@
-function getcurrentlang () {
+function getQuerystringparam (querystringparam) {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const language = urlParams.get('lang')
-    return language
-}
-
-function getDisplay () {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const display = urlParams.get('display')
-    return display
+    const value = urlParams.get(querystringparam)
+    return value
 }
 
 var getTotal = function (myChart) {
@@ -18,28 +11,32 @@ var getTotal = function (myChart) {
 }
 
 var getDoughnutcentertext = function () {
-    if (getcurrentlang() == 'sv') {
+    if (getQuerystringparam('lang') == 'sv') {
         return doughnutcentertext_sv
     } else {
         return doughnutcentertext
     }
 }
 
-if (getcurrentlang() == 'sv') {
-    if (getDisplay() == 'libtv') {
+if (getQuerystringparam('display') == 'libtv') {
+    $('body').css('overflow', 'hidden');
+}
+
+if (getQuerystringparam('lang') == 'sv') {
+    if (getQuerystringparam('display') == 'libtv') {
         $('#header').html(header_sv_lib_tv)
         $('#charttext').html(charttext_sv)
     } else {
-        $('#header').text(header_sv)
+        $('#header').html(header_sv)
         $('#charttext').html(charttext_sv)
     }
 } else {
-    if (getDisplay() == 'libtv') {
+    if (getQuerystringparam('display') == 'libtv') {
         $('#header').html(header_lib_tv)
         $('#charttext').html(charttext)
     } else {
-        $('#header').text(header)
-        $('#charttext').html(charttext_sv)
+        $('#header').html(header)
+        $('#charttext').html(charttext)
     }
 }
 
@@ -88,12 +85,12 @@ const myChart = new Chart(ctx, {
                     name: {
                         align: 'end',
                         anchor: 'end',
-                        color: 'rgba(255, 255, 255, 0.8)',
+                        color: textcolor,
                         font: function (context) {
                             var avgSize = Math.round((context.chart.height + context.chart.width) / 2);
                             var size = Math.round(avgSize / 32);
                             return {
-                                size: size + 3,
+                                size: size + 10,
                                 weight: 'bold'
                             };
                         },
@@ -102,7 +99,7 @@ const myChart = new Chart(ctx, {
                                 ? ctx.dataset.data[ctx.dataIndex] + ''
                                 : ctx.chart.data.labels[ctx.dataIndex];
                         },
-                        offset: 8,
+                        offset: 5,
                         opacity: function (ctx) {
                             return ctx.active ? 1 : 1;
                         }
@@ -116,31 +113,39 @@ const myChart = new Chart(ctx, {
                         text: getTotal,
                         font: {
                             size: doughnutcentertotalfontsize,
-                            family: 'Arial, Helvetica, sans-serif',
+                            family: '"Open Sans",Arial,"Helvetica Neue",helvetica,sans-ServiceUIFrameContext',
                             style: 'italic',
                             weight: 'bold',
                         },
-                        color: 'rgba(255, 255, 255, 0.8)',
+                        color: textcolor,
                     },
                     {
                         text: getDoughnutcentertext,
                         font: {
-                            size: doughnuttexttotalfontsize,
-                            family: 'Arial, Helvetica, sans-serif',
+                            size: doughnutcentertextfontsize,
+                            family: '"Open Sans",Arial,"Helvetica Neue",helvetica,sans-ServiceUIFrameContext',
                             style: 'italic',
                             weight: 'bold',
                         },
-                        color: 'rgba(255, 255, 255, 0.8)',
+                        color: textcolor,
                     },
                 ],
             }
         },
         cutout: cutout,
-        radius: radius
+        radius: radius,
+        layout: {
+            padding: {
+                left: 70,
+                right: 70,
+                top: 70,
+                bottom: 70
+            }
+        }
     }
 });
 
-if (usesocket == true) {
+if (getQuerystringparam('ws') == 'true') {
     var socket = io.connect(api_url);
 
     socket.on("FromAPI", function (data) {
@@ -177,7 +182,7 @@ function GETInitialVotes(first) {
         var chartlabelarray = [];
         var chartbackgroundcolorarray = [];
         for (let i in currentNewVotes) {
-            if (getcurrentlang() == 'sv') {
+            if (getQuerystringparam('lang') == 'sv') {
                 chartlabelarray.push(currentNewVotes[i].description_sv)
             } else {
                 chartlabelarray.push(currentNewVotes[i].description_en)
