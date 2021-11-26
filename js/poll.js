@@ -99,7 +99,7 @@ const myChart = new Chart(ctx, {
                                 ? ctx.dataset.data[ctx.dataIndex] + ''
                                 : ctx.chart.data.labels[ctx.dataIndex];
                         },
-                        offset: 5,
+                        offset: 15,
                         opacity: function (ctx) {
                             return ctx.active ? 1 : 1;
                         }
